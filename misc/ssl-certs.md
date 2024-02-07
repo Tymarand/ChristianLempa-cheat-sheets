@@ -7,39 +7,39 @@ X.509 is an ITU standard defining the format of public key certificates. X.509 a
 ### Generate CA
 1. Generate RSA
 ```bash
-openssl genrsa -aes256 -out ca-key.pem 4096
+openssl genrsa -aes256 -out ca-priv-key.pem 4096
 ```
 2. Generate a public CA Cert
 ```bash
-openssl req -new -x509 -sha256 -days 365 -key ca-key.pem -out ca.pem
+openssl req -new -x509 -sha256 -days 3650 -key ca-priv-key.pem -out ca-key.pem
 ```
 
 ### Optional Stage: View Certificate's Content
 ```bash
-openssl x509 -in ca.pem -text
-openssl x509 -in ca.pem -purpose -noout -text
+openssl x509 -in ca-key.pem -text
+openssl x509 -in ca-key.pem -purpose -noout -text
 ```
 
 ### Generate Certificate
 1. Create a RSA key
 ```bash
-openssl genrsa -out cert-key.pem 4096
+openssl genrsa -out cert-priv-key.pem 4096
 ```
 2. Create a Certificate Signing Request (CSR)
 ```bash
-openssl req -new -sha256 -subj "/CN=yourcn" -key cert-key.pem -out cert.csr
+openssl req -new -sha256 -subj "/CN=yourcn" -key cert-priv-key.pem -out <ServerName>cert.csr
 ```
 3. Create a `extfile` with all the alternative names
 ```bash
-echo "subjectAltName=DNS:your-dns.record,IP:257.10.10.1" >> extfile.cnf
+echo "subjectAltName=DNS:<*.oehuman.lab OR hostname.oehuman.lab,IP:<server IP>" >> <ServerName>extfile.cnf
 ```
 ```bash
 # optional
-echo extendedKeyUsage = serverAuth >> extfile.cnf
+echo extendedKeyUsage = serverAuth >> <ServerName>extfile.cnf
 ```
 4. Create the certificate
 ```bash
-openssl x509 -req -sha256 -days 365 -in cert.csr -CA ca.pem -CAkey ca-key.pem -out cert.pem -extfile extfile.cnf -CAcreateserial
+openssl x509 -req -sha256 -days 3650 -in <ServerName>cert.csr -CA ca-key.pem -CAkey ca-priv-key.pem -out <ServerName>cert.pem -extfile <ServerName>extfile.cnf -CAcreateserial
 ```
 
 ## Certificate Formats
@@ -50,12 +50,12 @@ X.509 Certificates exist in Base64 Formats **PEM (.pem, .crt, .ca-bundle)**, **P
 
 COMMAND | CONVERSION
 ---|---
-`openssl x509 -outform der -in cert.pem -out cert.der` | PEM to DER
-`openssl x509 -inform der -in cert.der -out cert.pem` | DER to PEM
-`openssl pkcs12 -in cert.pfx -out cert.pem -nodes` | PFX to PEM
+`openssl x509 -outform der -in <ServerName>cert.pem -out <ServerName>cert.der` | PEM to DER
+`openssl x509 -inform der -in <ServerName>cert.der -out <ServerName>cert.pem` | DER to PEM
+`openssl pkcs12 -in <ServerName>cert.pfx -out <ServerName>cert.pem -nodes` | PFX to PEM
 
 ## Verify Certificates
-`openssl verify -CAfile ca.pem -verbose cert.pem`
+`openssl verify -CAfile <ServerName>ca.pem -verbose <ServerName>cert.pem`
 
 ## Install the CA Cert as a trusted root CA
 
