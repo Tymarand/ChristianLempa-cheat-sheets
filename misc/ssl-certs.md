@@ -60,7 +60,7 @@ COMMAND | CONVERSION
 ## Install the CA Cert as a trusted root CA
 
 ### On Debian & Derivatives
-- Move the CA certificate (`ca.pem`) into `/usr/local/share/ca-certificates/ca.crt`.
+- Move the CA certificate (`ca-key.pem`) into `/usr/local/share/ca-certificates/ca-key.crt`.
 - Update the Cert Store with:
 ```bash
 sudo update-ca-certificates
@@ -69,7 +69,7 @@ sudo update-ca-certificates
 Refer the documentation [here](https://wiki.debian.org/Self-Signed_Certificate) and [here.](https://manpages.debian.org/buster/ca-certificates/update-ca-certificates.8.en.html)
 
 ### On Fedora
-- Move the CA certificate (`ca.pem`) to `/etc/pki/ca-trust/source/anchors/ca.pem` or `/usr/share/pki/ca-trust-source/anchors/ca.pem`
+- Move the CA certificate (`ca-key.pem`) to `/etc/pki/ca-trust/source/anchors/ca-key.pem` or `/usr/share/pki/ca-trust-source/anchors/ca-key.pem`
 - Now run (with sudo if necessary):
 ```bash
 update-ca-trust
@@ -96,7 +96,7 @@ wiki page  [here](https://wiki.archlinux.org/title/User:Grawity/Adding_a_trusted
 
 Assuming the path to your generated CA certificate as `C:\ca.pem`, run:
 ```powershell
-Import-Certificate -FilePath "C:\ca.pem" -CertStoreLocation Cert:\LocalMachine\Root
+Import-Certificate -FilePath "C:\ca-key.pem" -CertStoreLocation Cert:\LocalMachine\Root
 ```
 - Set `-CertStoreLocation` to `Cert:\CurrentUser\Root` in case you want to trust certificates only for the logged in user.
 
@@ -104,7 +104,7 @@ OR
 
 In Command Prompt, run:
 ```sh
-certutil.exe -addstore root C:\ca.pem
+certutil.exe -addstore root C:\ca-key.pem
 ```
 
 - `certutil.exe` is a built-in tool (classic `System32` one) and adds a system-wide trust anchor.
@@ -116,6 +116,6 @@ The exact steps vary device-to-device, but here is a generalised guide:
 2. Locate `Encryption and Credentials` section. It is generally found under `Settings > Security > Encryption and Credentials`
 3. Choose `Install a certificate`
 4. Choose `CA Certificate`
-5. Locate the certificate file `ca.pem` on your SD Card/Internal Storage using the file manager.
+5. Locate the certificate file `ca-key.pem` on your SD Card/Internal Storage using the file manager.
 6. Select to load it.
 7. Done!
